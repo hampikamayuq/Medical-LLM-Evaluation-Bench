@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "medical-llm-evaluation-bench"
-version = "0.1.0"
+version = "0.2.0"
 description = "Clinician-oriented benchmark for evaluating medical LLM behavior on synthetic dermatology tasks."
 requires-python = ">=3.11"
 dependencies = ["pydantic>=2.8"]
