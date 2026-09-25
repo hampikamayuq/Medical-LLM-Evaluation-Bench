@@ -56,6 +56,21 @@ pytest
 
 The default adapter is deterministic and does not call an external model. Replace `MockModelAdapter` with a provider-specific adapter when you want to benchmark a real model.
 
+## Comparative real-model runs
+
+The benchmark can run multiple external models through an optional LiteLLM adapter while keeping provider credentials outside the repository.
+
+```bash
+pip install -e '.[providers,dev]'
+cp models.example.json models.local.json
+# edit models.local.json with the exact provider/model identifiers
+python scripts/run_matrix.py --models models.local.json
+```
+
+The command writes a CSV to `results/latest.csv` and prints a Markdown comparison table. Commit results only when the exact model IDs, execution date, dataset commit and settings are recorded.
+
+See `results/README.md` for the reporting template.
+
 ## Repository structure
 
 ```text
