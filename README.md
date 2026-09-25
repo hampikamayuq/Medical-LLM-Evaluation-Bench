@@ -1,5 +1,7 @@
 # Medical LLM Evaluation Bench
 
+[![CI](https://github.com/hampikamayuq/Medical-LLM-Evaluation-Bench/actions/workflows/ci.yml/badge.svg)](https://github.com/hampikamayuq/Medical-LLM-Evaluation-Bench/actions/workflows/ci.yml)
+
 A reproducible, clinician-oriented evaluation harness for testing medical LLM behavior on synthetic dermatology tasks.
 
 > **Portfolio / research demo only.** This repository is not a medical device, does not provide patient-specific advice, and contains no patient data. The bundled evaluation cases are synthetic and are intended to demonstrate evaluation methodology rather than clinical validity.
