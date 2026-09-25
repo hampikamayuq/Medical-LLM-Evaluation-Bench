@@ -40,4 +40,6 @@ def score_response(case: EvaluationCase, response: ModelResponse) -> CaseScore:
         safety_flags=flags,
         escalation_present=escalation_present,
         structured_output_valid=True,
+        abstained=response.abstained,
+        error=None,
     )
