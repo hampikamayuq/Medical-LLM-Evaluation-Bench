@@ -16,6 +16,9 @@ Medical LLM evaluation should go beyond generic accuracy. A clinically useful be
 - appropriate uncertainty and escalation;
 - instruction adherence;
 - structured-output reliability;
+- abstention behavior;
+- transport/output failures;
+- latency under controlled local conditions;
 - reproducibility across models and prompt versions.
 
 This project implements a small, transparent benchmark that can be extended with clinician-reviewed datasets.
@@ -32,6 +35,8 @@ flowchart LR
     E --> F
     F --> G[Aggregate Report]
     G --> H[Regression Gate]
+    I[Ollama Local Models] --> B
+    J[Optional Hosted Models] --> B
 ```
 
 ## Included metrics
@@ -41,35 +46,59 @@ flowchart LR
 - **Safety flags** — deterministic patterns for clearly unsafe output categories.
 - **Uncertainty / escalation** — checks whether cases requiring escalation contain an appropriate recommendation for in-person or urgent review.
 - **Structured-output validity** — validates model outputs against a Pydantic schema.
+- **Abstention rate** — tracks explicit model deferral.
+- **Error rate** — distinguishes malformed output or adapter failures from model-quality scores.
+- **Mean/P95 latency** — wall-clock response time for controlled local comparisons.
 
 These metrics are intentionally interpretable. They are not substitutes for clinician review.
 
-## Quick start
+## Keyless local benchmark with Ollama
+
+The default real-model path uses a local Ollama server and requires **no API key**.
+
+Example models:
+
+```bash
+ollama pull qwen3:4b-instruct
+ollama pull gemma3:4b
+ollama pull llama3.2:3b
+```
+
+Then:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -e .[dev]
+python scripts/run_ollama_matrix.py
+```
+
+Outputs:
+
+- `results/ollama-latest.csv`
+- `results/ollama-latest.md`
+
+The runner records the exact model names, run timestamp, Git commit and host platform. See [`docs/ollama.md`](docs/ollama.md) for setup and reproducibility notes.
+
+## Pipeline smoke test
+
+The built-in `MockModelAdapter` is deterministic and is only used to verify benchmark behavior:
+
+```bash
 med-eval --dataset data/synthetic_dermatology_cases.json
 pytest
 ```
 
-The default adapter is deterministic and does not call an external model. Replace `MockModelAdapter` with a provider-specific adapter when you want to benchmark a real model.
+## Optional hosted-model runs
 
-## Comparative real-model runs
-
-The benchmark can run multiple external models through an optional LiteLLM adapter while keeping provider credentials outside the repository.
+Hosted providers remain supported through the optional LiteLLM adapter:
 
 ```bash
 pip install -e '.[providers,dev]'
 cp models.example.json models.local.json
-# edit models.local.json with the exact provider/model identifiers
+# configure exact provider/model identifiers and credentials
 python scripts/run_matrix.py --models models.local.json
 ```
-
-The command writes a CSV to `results/latest.csv` and prints a Markdown comparison table. Commit results only when the exact model IDs, execution date, dataset commit and settings are recorded.
-
-See `results/README.md` for the reporting template.
 
 ## Repository structure
 
@@ -78,16 +107,32 @@ src/med_eval/
   cli.py
   models.py
   adapters.py
+  ollama_adapter.py
+  litellm_adapter.py
   scoring.py
   runner.py
+  matrix.py
+
+scripts/
+  run_ollama_matrix.py
+  run_matrix.py
 
 data/
   synthetic_dermatology_cases.json
 
+results/
+  README.md
+
 tests/
   test_scoring.py
   test_runner.py
+  test_matrix.py
+  test_ollama_adapter.py
 ```
+
+## Example local model configuration
+
+`models.ollama.example.json` currently contains compact model tags intended for practical local testing. Model availability is controlled by the local Ollama installation and may change over time.
 
 ## How I would extend this in production research
 
@@ -95,14 +140,14 @@ tests/
 2. Stratify by task: diagnosis support, triage, management, patient communication, extraction, summarization.
 3. Add pairwise blinded physician review and inter-rater agreement.
 4. Add citation-grounding metrics against retrieved evidence.
-5. Track performance by model version, temperature, system prompt and retrieval configuration.
+5. Track performance by exact model build, quantization, temperature, seed, system prompt and retrieval configuration.
 6. Add confidence calibration and selective-abstention analysis.
 7. Add demographic and edge-case fairness audits where appropriate.
 8. Define deployment-specific acceptance thresholds rather than a single universal score.
 
 ## Skills demonstrated
 
-`Medical AI evaluation` · `LLM benchmarking` · `Python` · `Pydantic` · `pytest` · `Clinical safety` · `Human-in-the-loop evaluation` · `Reproducible research`
+`Medical AI evaluation` · `Local LLMs` · `Ollama` · `LLM benchmarking` · `Python` · `Pydantic` · `pytest` · `Clinical safety` · `Human-in-the-loop evaluation` · `Reproducible research`
 
 ## Author
 
