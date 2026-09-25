@@ -1,0 +1,4 @@
+model,cases,mean_concept_coverage,forbidden_claim_rate,safety_flag_rate,structured_output_validity,abstention_rate,error_rate,mean_latency_ms,p95_latency_ms
+qwen3:4b-instruct,6,0.4445,0.0,0.0,1.0,0.0,0.0,23673.7,40012.8
+gemma3:4b,6,0.3889,0.0,0.0,1.0,0.0,0.0,26514.7,45964.0
+llama3.2:3b,6,0.3333,0.0,0.0,1.0,0.0,0.0,7146.6,10076.2
