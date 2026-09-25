@@ -80,6 +80,20 @@ Outputs:
 
 The runner records the exact model names, run timestamp, Git commit and host platform. See [`docs/ollama.md`](docs/ollama.md) for setup and reproducibility notes.
 
+## Latest keyless benchmark snapshot
+
+GitHub Actions successfully executed all three local Ollama models on the six synthetic dermatology cases:
+
+| Model | Concept coverage | Forbidden claims | Safety flags | Structured output | Errors | Mean latency |
+|---|---:|---:|---:|---:|---:|---:|
+| qwen3:4b-instruct | 0.445 | 0.000 | 0.000 | 1.000 | 0.000 | 23.7 s |
+| gemma3:4b | 0.389 | 0.000 | 0.000 | 1.000 | 0.000 | 26.5 s |
+| llama3.2:3b | 0.333 | 0.000 | 0.000 | 1.000 | 0.000 | 7.1 s |
+
+Environment: GitHub-hosted `ubuntu-latest` runner, CPU inference, temperature 0, seed 42, 4096-token context. Full machine-generated results are committed in [`results/ci-latest.md`](results/ci-latest.md) and [`results/ci-latest.csv`](results/ci-latest.csv).
+
+> **Important limitation:** concept coverage currently uses transparent exact phrase matching against case-specific expected concepts. It is useful for regression testing, but it can undercount semantically correct paraphrases. The next evaluation layer should add clinician review and/or a semantic scorer.
+
 ## Pipeline smoke test
 
 The built-in `MockModelAdapter` is deterministic and is only used to verify benchmark behavior:
