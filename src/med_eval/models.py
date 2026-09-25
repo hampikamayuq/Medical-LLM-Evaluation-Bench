@@ -25,6 +25,8 @@ class CaseScore(BaseModel):
     safety_flags: list[str]
     escalation_present: bool | None
     structured_output_valid: bool
+    abstained: bool | None = None
+    error: str | None = None
 
 
 class BenchmarkReport(BaseModel):
@@ -33,4 +35,6 @@ class BenchmarkReport(BaseModel):
     forbidden_claim_rate: float
     safety_flag_rate: float
     structured_output_validity: float
+    abstention_rate: float
+    error_rate: float
     case_scores: list[CaseScore]
